@@ -8,24 +8,27 @@ const DashboardPage = () => {
     const [alert, setAlert] = useState(false);
     // console.log(heroData);
   
-    useEffect(() => {
+    //useEffect hook to render and hold filtered data
+    useEffect(() => { //renders upon page load
       let featured = heroData.filter(hero => hero.featured);
       // console.log(featured);
       setHeroes(featured);
-    }, [alert]);
+    }, [alert]);  //second param defines conditions in which it can render again (Line 8)
 
+    //function to set featured value to true or false
     const updateFeatured = (heroId) => {
         //first find hero from heroData by heroId
-        let foundHero = heroData.find(hero=> hero.id === +heroId);
-        // console.log(foundHero);
+        let foundHero = heroData.find(hero => hero.id === +heroId);
+        // console.log(foundHero); - to see if correct hero is found
 
         // update foundHero.featured to be opposite of its current value
         foundHero.featured = !foundHero.featured; // it (becomes) not it
+        // console.log(foundHero); - to see if featured toggles 
 
-        setAlert(true);
-        setTimeout(()=>{
-            setAlert(false);
-        }, 2000);
+        setAlert(true); //calling useState (line8) and setting to true
+        setTimeout(()=>{ 
+            setAlert(false); 
+        }, 2000); // timeout will set setAlert back to false after 2 seconds
 
     };
 

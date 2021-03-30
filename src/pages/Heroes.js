@@ -4,12 +4,21 @@ import {heroData} from '../data/heroes';
 
 const HeroesPage = () => {
     //useState sets up a state for the heroDATA to go through
-    const [HeroesPage, setHeroes] = useState([]);
+    const [heroes, setHeroes] = useState([]);
     const [alert, setAlert]=useState(false);
+    const [searchTerm, setSeatchTerm] = useState(''); 
     
-    useEffect(()=>{     //useEffect will set the heroes cards to this page
-        setHeroes(heroData);
-    }, [alert]);        //alert (2nd param) triggers useEffect
+    useEffect(()=>{     
+        const foundHeroes = heroData.filter(hd => { //.filter() dataset when search term matches dataset.name
+            return (
+                hd.superhero.toLowerCase().includes(searchTerm.toLowerCase()) + //includes() returns truthy or falsey - casing will matter
+                hd.alter_ego.toLowerCase().includes(searchTerm.toLowerCase()) +
+                hd.publisher.toLowerCase().includes(searchTerm.toLowerCase()) //multiple properties can be checked
+                );
+        });    
+        // console.log("These are my results", SearchResults);
+        searchTerm === '' ? setHeroes(heroData) : setHeroes(foundHeroes); //conditional to set search result
+    }, [alert, searchTerm]);        //alert (2nd param) triggers useEffect
 
     const updateFeatured = (heroId) => {
         //first find hero from heroData by heroId
@@ -26,6 +35,10 @@ const HeroesPage = () => {
 
     };
 
+    const handleChange = event =>{
+        // console.log(event.target.value);
+        setSeatchTerm(event.target.value);
+    };
 
     return (
         <div id="heroes">
@@ -36,10 +49,25 @@ const HeroesPage = () => {
                     </div>
                 </div>
             </div>
+            {/* form */}
             <div className="row">
-                {HeroesPage.map((hero)=>{
+                <div className="col">
+                    <div className="form-group">
+                        <input 
+                            type="text" 
+                            className="form-control"
+                            id="hero-search" 
+                            value={searchTerm} 
+                            onChange={handleChange} 
+                            placeholder="Search for a superhero" />
+                    </div>
+                </div>
+            </div>
+            {/* end form */}
+            <div className="row">
+                {heroes.map((hero)=>{
                     return (
-                        <div className="col-sm-12 col-md-3">
+                        <div className="col-sm-12 col-md-3" key={hero.id}>
                             <HeroCard hero={hero} updateFeatured={updateFeatured}/>
                         </div>
                     )
